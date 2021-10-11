@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const morgan = require('morgan')
-morgan.token('body', (req, res) => JSON.stringify(req.body));
+morgan.token('body', (req) => JSON.stringify(req.body))
 
 require('dotenv').config()
 const Person = require('./models/person')
@@ -30,20 +30,20 @@ let persons = [
   { id: 4, name: 'Mary Poppendieck', number: '39-23-6423122' }
 ]
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>')
+app.get('/', (request, response) => {
+  response.send('<h1>Hello World!</h1>')
 })
 
-app.get('/info', (req, res) => {
+app.get('/info', (request, response) => {
   Person.count().then((count) => {
-    res.send('Phonebook has info for ' + count + ' people' + '<br></br>'
+    response.send('Phonebook has info for ' + count + ' people' + '<br></br>'
       + new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(new Date()))
-  });
+  })
 })
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (request, response) => {
   Person.find({}).then(persons => {
-    res.json(persons)
+    response.json(persons)
   })
 })
 
@@ -61,7 +61,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
